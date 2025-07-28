@@ -1,6 +1,7 @@
-[package]
-name = "Rust-Solana-Portfolio"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
+[workspace]
+members = [
+    "01_basics/hello_world",
+    "01_basics/shapes_calculator"
+    # Add more as we create them
+]
+resolver = "3"

@@ -1,47 +1,63 @@
-# Hello World (Rust Edition)
+# Shapes Calculator
 
 ![Rust Version](https://img.shields.io/badge/Rust-1.70%2B-orange)
 ![Build Status](https://github.com/yourusername/rust-solana-portfolio/actions/workflows/rust.yml/badge.svg)
 
 ## Overview
-A simple **Rust "Hello World" program** with a twist — it **takes user input** and responds dynamically.  
-This is my first step in building Rust projects for this portfolio.
+An **interactive CLI tool** that calculates the **area** and **perimeter** of two shapes:  
+- **Circle**
+- **Rectangle**
+
+It demonstrates:
+- **Traits & Structs**: Defining reusable behavior for different shape types.
+- **Pattern Matching**: Handling user choice dynamically.
+- **Input Validation**: Ensuring valid numeric input.
+- **Testing**: Verifying area & perimeter calculations.
 
 ---
 
 ## Concepts Learned
-- **Cargo project structure:** `Cargo.toml` and `src/main.rs`.
-- **Printing output:** Using `println!()`.
-- **Reading user input:** With `std::io::stdin()`.
-- **String manipulation:** Using `.trim()` to remove whitespace/newlines.
-- **Error handling:** `.expect()` for basic input handling.
+- Implementing a **Rust trait** for multiple structs.
+- Using **match** for branching on user input.
+- Creating **helper functions** for reusable input parsing.
+- Writing **unit tests** for mathematical functions.
+- Formatting floating‑point output with `"{:.2}"`.
 
 ---
 
 ## Project Structure
 ```
-
-hello\_world/
-├── Cargo.toml      # Project metadata
+shapes_calculator/
+├── Cargo.toml
 └── src/
-└── main.rs     # Program entry point
-
-````
+    └── main.rs
+```
 
 ---
 
 ## How to Run
 ```bash
-cd 01_basics/hello_world
+cd 01_basics/shapes_calculator
 cargo run
-````
-
-**Example Output:**
-
 ```
-Hello, Rust! What's your name?
-Kwesili
-Nice to meet you, Kwesili!
+
+### Example Output:
+```
+Shapes Calculator
+Choose a shape:
+1) Circle
+2) Rectangle
+1
+Enter the radius:
+5
+Area: 78.54
+Perimeter: 31.42
 ```
 
 ---
+
+## How to Test
+```bash
+cargo test
+```
+
