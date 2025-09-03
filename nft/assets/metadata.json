@@ -1,0 +1,26 @@
+{
+  "name": "My Test NFT",
+  "symbol": "TST",
+  "description": "This is a test NFT deployed on Solana Devnet using Metaplex + UMI.",
+  "seller_fee_basis_points": 0,
+  "image": "https://raw.githubusercontent.com/UncleKweks/Rust-Solana-Portfolio/main/nft/assets/token.png",
+  "attributes": [
+    { "trait_type": "Generation", "value": "1" },
+    { "trait_type": "Mood", "value": "Test" }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://raw.githubusercontent.com/UncleKweks/Rust-Solana-Portfolio/main/nft/assets/token.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "5JtJWm2RGdUn1uaHQ5Ny6jYxFafXcYFdAjwiNgtejP6k",
+        "share": 100
+      }
+    ]
+  }
+}
