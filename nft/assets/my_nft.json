@@ -1,0 +1,27 @@
+{
+    "name": "Galactic Explorer",
+    "symbol": "GALX",
+    "description": "An NFT that represents exploration beyond the stars.",
+    "seller_fee_basis_points": 0,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/NGC_4414_%28NASA-med%29.jpg/800px-NGC_4414_%28NASA-med%29.jpg",
+    "attributes": [
+        {
+            "trait_type": "Background",
+            "value": "Cosmic"
+        },
+        {
+            "trait_type": "Theme",
+            "value": "Galaxy"
+        }
+    ],
+    "properties": {
+        "files": [
+            {
+                "uri": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/NGC_4414_%28NASA-med%29.jpg/800px-NGC_4414_%28NASA-med%29.jpg",
+                "type": "image/jpg"
+            }
+        ],
+        "category": "image",
+        "creators": []
+    }
+}
