@@ -1,0 +1,19 @@
+[toolchain]
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+social_platform = "3fAf1f2xVmJxSuUkV9RXs8jkLLFUj51YDmS4DUjXao7Z"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn mocha -r ts-node/register -t 1000000 'tests/**/*.ts'"

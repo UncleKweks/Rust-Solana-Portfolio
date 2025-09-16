@@ -1,0 +1,18 @@
+# Rust
+/target
+**/*.rs.bk
+Cargo.lock
+
+# Anchor
+.mango/
+.anchor/
+tests/target/
+target/
+
+# Node
+node_modules
+yarn-error.log
+npm-debug.log*
+
+# General
+.DS_Store

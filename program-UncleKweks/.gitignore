@@ -1,0 +1,24 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+dist
+build
+
+# Solana & Anchor
+target/
+.DS_Store
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Keypairs
+*.json
+*.key
+
+# VSCode
+.vscode/
