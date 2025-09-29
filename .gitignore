@@ -19,4 +19,35 @@ npm-debug.log*
 
 # Ignore test-ledger artifacts
 test-ledger/
-swap/test-ledger/
+swap/test-ledger/# Node
+node_modules/
+.npm/
+.yarn/
+*.log
+.next/
+out/
+dist/
+
+# Rust / Anchor
+target/
+**/target/
+**/node_modules/
+.DS_Store
+
+# Env
+.env
+.env.local
+
+# Solana
+*.so
+*.key
+.idl.json
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Build artifacts
+frontend/.turbo/
+frontend/.vercel/
+
