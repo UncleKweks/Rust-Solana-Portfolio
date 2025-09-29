@@ -5,7 +5,7 @@ import { useSolana } from '@/components/solana/use-solana'
 import { useClusterVersion } from '../data-access/use-cluster-version'
 
 export function ClusterUiChecker({ children }: { children: ReactNode }) {
-  const { cluster } = useSolana()
+  const { cluster } = useSolana() as any
   const query = useClusterVersion()
 
   if (query.isLoading) {
@@ -22,7 +22,7 @@ export function ClusterUiChecker({ children }: { children: ReactNode }) {
         }
         className="mb-4"
       >
-        Error connecting to cluster <span className="font-bold">{cluster?.label ?? "Unknown Cluster"}</span>.
+        Error connecting to cluster <span className="font-bold">{cluster?.label ?? 'Unknown'}</span>.
       </AppAlert>
     )
   }

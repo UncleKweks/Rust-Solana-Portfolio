@@ -1,37 +1,13 @@
-'use client';
+import { ReactNode } from 'react'
+import { createSolanaDevnet, createSolanaLocalnet, createWalletUiConfig, WalletUi } from '@wallet-ui/react'
+import { solanaMobileWalletAdapter } from './solana-mobile-wallet-adapter'
 
-import { useMemo, PropsWithChildren } from 'react';
-import { AnchorProvider } from '@coral-xyz/anchor';
-import { ConnectionProvider, WalletProvider, useWallet } from '@solana/wallet-adapter-react';
-import { clusterApiUrl, Connection } from '@solana/web3.js';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+const config = createWalletUiConfig({
+  clusters: [createSolanaDevnet(), createSolanaLocalnet()],
+})
 
-export function useAnchorProvider(): AnchorProvider | null {
-  const wallet = useWallet();
-  const endpoint = clusterApiUrl('devnet');
+solanaMobileWalletAdapter({ clusters: config.clusters })
 
-  return useMemo(() => {
-    if (!wallet || !wallet.publicKey) return null;
-
-    // Create Solana connection
-    const connection = new Connection(endpoint, 'confirmed');
-
-    // ✅ Return a full AnchorProvider, not PublicKey
-    return new AnchorProvider(connection, wallet as any, {
-      preflightCommitment: 'processed',
-    });
-  }, [wallet, endpoint]);
-}
-
-export function SolanaProvider({ children }: PropsWithChildren<{}>) {
-  const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
-  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
-
-  return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        {children}
-      </WalletProvider>
-    </ConnectionProvider>
-  );
+export function SolanaProvider({ children }: { children: ReactNode }) {
+  return <WalletUi config={config}>{children}</WalletUi>
 }

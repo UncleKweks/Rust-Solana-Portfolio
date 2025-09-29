@@ -2,7 +2,9 @@
 members = [
     "01_basics/hello_world",
     "01_basics/shapes_calculator",
-    "programs/*"
+    "programs/*",
+    "programs/swap",
+    "programs/crud-backend"
 ]
 
 resolver = "2"
@@ -16,3 +18,4 @@ codegen-units = 1
 opt-level = 3
 incremental = false
 codegen-units = 1
+

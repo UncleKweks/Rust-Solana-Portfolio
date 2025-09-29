@@ -1,150 +1,163 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { RefreshCw, Sun, Moon, AlertCircle, Book, ChefHat, Droplets, MessageSquare, Wallet } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ArrowRight, BookOpen, CookingPot, Droplets, LucideWallet, MessageCircleQuestion } from 'lucide-react'
+import { useState } from 'react'
+import { AppHero } from '@/components/app-hero'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useSolana } from '@/components/solana/use-solana'
+import { PublicKey } from '@solana/web3.js'
+import { toast } from 'sonner'
+import { getProgramFromWalletUi, SystemProgram } from '@/lib/anchor'
+
+const primary: {
+  label: string
+  href: string
+  description: string
+  icon: React.ReactNode
+}[] = [
+    {
+      label: 'Solana Docs',
+      href: 'https://solana.com/docs',
+      description: 'The official documentation. Your first stop for understanding the Solana ecosystem.',
+      icon: <BookOpen className="w-8 h-8 text-purple-400" />,
+    },
+    {
+      label: 'Solana Cookbook',
+      href: 'https://solana.com/developers/cookbook/',
+      description: 'Practical examples and code snippets for common tasks when building on Solana.',
+      icon: <CookingPot className="w-8 h-8 text-green-400" />,
+    },
+  ]
+
+const secondary: {
+  label: string
+  href: string
+  icon: React.ReactNode
+}[] = [
+    {
+      label: 'Solana Faucet',
+      href: 'https://faucet.solana.com/',
+      icon: <Droplets className="w-5 h-5 text-green-400" />,
+    },
+    {
+      label: 'Solana Stack Overflow',
+      href: 'https://solana.stackexchange.com/',
+      icon: <MessageCircleQuestion className="w-5 h-5 text-orange-400" />,
+    },
+    {
+      label: 'Wallet UI Docs',
+      href: 'https://wallet-ui.dev',
+      icon: <LucideWallet className="w-5 h-5 text-blue-400" />,
+    },
+  ]
 
 export default function DashboardFeature() {
-  const { theme, setTheme } = useTheme()
-  const { connected } = useWallet()
-  const [isDark, setIsDark] = useState(true)
+  const sol = useSolana()
+  const account = sol.account
+  const [title, setTitle] = useState('')
+  const [category, setCategory] = useState('General')
+  const [content, setContent] = useState('')
 
-  const toggleTheme = () => {
-    setIsDark(!isDark)
-    setTheme(isDark ? 'light' : 'dark')
+  async function onInitProfile() {
+    if (!account?.address) return
+    try {
+      const program = await getProgramFromWalletUi(sol)
+      const ownerPk = new PublicKey(account.address)
+      const [userProfile] = PublicKey.findProgramAddressSync(
+        [Buffer.from('profile'), ownerPk.toBuffer()],
+        program.programId,
+      )
+      await program.methods
+        .initializeUserProfile()
+        .accounts({ owner: ownerPk, userProfile, systemProgram: SystemProgram.programId })
+        .rpc()
+      toast.success('Profile initialized')
+    } catch (e: any) {
+      toast.error(e?.message ?? 'Failed to initialize profile')
+    }
   }
 
+  async function onCreate() {
+    if (!account?.address) return
+    try {
+      const program = await getProgramFromWalletUi(sol)
+      const ownerPk = new PublicKey(account.address)
+      const [journalEntry] = PublicKey.findProgramAddressSync(
+        [Buffer.from(title), ownerPk.toBuffer()],
+        program.programId,
+      )
+      const [userProfile] = PublicKey.findProgramAddressSync(
+        [Buffer.from('profile'), ownerPk.toBuffer()],
+        program.programId,
+      )
+      await program.methods
+        .createJournalEntry(title, content, category)
+        .accounts({ owner: ownerPk, journalEntry, userProfile, systemProgram: SystemProgram.programId })
+        .rpc()
+      toast.success('Entry created')
+    } catch (e: any) {
+      toast.error(e?.message ?? 'Failed to create entry')
+    }
+  }
   return (
-    <div className={`min-h-screen bg-background text-foreground ${isDark ? "dark" : ""}`}>
-      {/* Navigation Header */}
-      <header className="border-b border-border bg-background">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-8">
-            <h1 className="text-xl font-semibold">Crudapp</h1>
-            <nav className="flex items-center gap-6">
-              <a href="/" className="text-foreground hover:text-muted-foreground transition-colors">
-                Home
-              </a>
-              <a href="/account" className="text-foreground hover:text-muted-foreground transition-colors">
-                Account
-              </a>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              Select Wallet
-            </Button>
-            <Button variant="outline" size="sm">
-              Select Cluster
-            </Button>
-            <Button variant="ghost" size="sm" onClick={toggleTheme} className="p-2">
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-          </div>
+    <div>
+      <AppHero title="gm" subtitle="Say hi to your new Solana app." />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 grid gap-2 max-w-md">
+          <Button onClick={onInitProfile} disabled={!account?.address}>Initialize Profile</Button>
+          <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+          <Input placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
+          <Button onClick={onCreate} disabled={!account?.address}>Create Entry</Button>
         </div>
-      </header>
-
-      {/* Error Banner */}
-      <div className="px-6 py-4">
-        <Alert className="border-yellow-600 bg-yellow-950/20">
-          <AlertCircle className="h-4 w-4 text-yellow-500" />
-          <AlertDescription className="flex items-center justify-between text-yellow-200">
-            <span>Error connecting to cluster Unknown Cluster.</span>
-            <Button variant="ghost" size="sm" className="text-yellow-400 hover:text-yellow-300">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-          </AlertDescription>
-        </Alert>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {primary.map((link) => (
+            <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="block group">
+              <Card className="h-full flex flex-col transition-all duration-200 ease-in-out group-hover:border-primary group-hover:shadow-lg group-hover:-translate-y-1">
+                <CardHeader className="flex-row items-center gap-4">
+                  {link.icon}
+                  <div>
+                    <CardTitle className="group-hover:text-primary transition-colors">{link.label}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="text-muted-foreground">{link.description}</p>
+                </CardContent>
+              </Card>
+            </a>
+          ))}
+        </div>
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>More Resources</CardTitle>
+              <CardDescription>Expand your knowledge with these community and support links.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                {secondary.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="flex items-center gap-4 group rounded-md p-2 -m-2 hover:bg-muted transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.icon}
+                      <span className="flex-grow text-muted-foreground group-hover:text-foreground transition-colors">
+                        {link.label}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      {/* Main Content */}
-      <main className="px-6 py-8">
-        {!connected ? (
-          <div className="text-center">
-            <p className="text-lg text-muted-foreground">Please connect your wallet to use the CRUD App.</p>
-          </div>
-        ) : (
-          <div className="max-w-4xl mx-auto">
-            {/* Hero Section */}
-            <div className="text-center mb-12">
-              <h1 className="text-6xl font-bold mb-4">gm</h1>
-              <p className="text-xl text-muted-foreground">Say hi to your new Solana app.</p>
-            </div>
-
-            {/* Resource Cards */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <Card className="bg-card border-border hover:bg-accent/50 transition-colors cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-purple-500/20">
-                      <Book className="h-6 w-6 text-purple-400" />
-                    </div>
-                    <CardTitle className="text-xl">Solana Docs</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
-                    The official documentation. Your first stop for understanding the Solana ecosystem.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-card border-border hover:bg-accent/50 transition-colors cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-green-500/20">
-                      <ChefHat className="h-6 w-6 text-green-400" />
-                    </div>
-                    <CardTitle className="text-xl">Solana Cookbook</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
-                    Practical examples and code snippets for common tasks when building on Solana.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* More Resources Section */}
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="text-xl">More Resources</CardTitle>
-                <CardDescription>Expand your knowledge with these community and support links.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
-                  <div className="p-2 rounded-lg bg-green-500/20">
-                    <Droplets className="h-5 w-5 text-green-400" />
-                  </div>
-                  <span className="text-foreground">Solana Faucet</span>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
-                  <div className="p-2 rounded-lg bg-orange-500/20">
-                    <MessageSquare className="h-5 w-5 text-orange-400" />
-                  </div>
-                  <span className="text-foreground">Solana Stack Overflow</span>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
-                  <div className="p-2 rounded-lg bg-blue-500/20">
-                    <Wallet className="h-5 w-5 text-blue-400" />
-                  </div>
-                  <span className="text-foreground">Wallet UI Docs</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </main>
     </div>
   )
 }

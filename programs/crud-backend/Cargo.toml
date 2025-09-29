@@ -1,0 +1,17 @@
+[package]
+name = "crud-backend"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "crud_backend"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+anchor-lang = "0.31.1"  
+anchor-spl = "0.31.1" 
+
+[features]
+no-entrypoint = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+# or match your root Anchor version

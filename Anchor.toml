@@ -1,13 +1,14 @@
 [toolchain]
-package_manager = "yarn"
 anchor_version = "0.31.1"
+package_manager = "yarn"
 
 [features]
 resolution = true
 skip-lint = false
 
 [programs.localnet]
-swap = "HRAEB4PHz5qBdG3o8wzd2cwJM24UGhhQ672t7wpWFcTM"
+crud_backend = "933zmSGvoLgSaxNVCJURuXTSx4j1t4kdJbELGTxoX1u9"
+swap = "EST6eEpbZyQDa1oNzz6rRHuY3kmjbMEd2jf7c4FqbvFv"
 
 [registry]
 url = "https://api.apr.dev"
